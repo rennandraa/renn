@@ -146,10 +146,8 @@
     <div class="image-container" style="display: none;">
       <img id="story-image" src="" alt="Gambar cerita" />
     </div>
-    <div class="text-container" id="story-text" tabindex="0" style="display: none;">
-      Memuat cerita...
-    </div>
     <div class="button-container" id="next-button-container" style="display: none;">
+      <button id="back-btn">Kembali</button>
       <button id="next-story-btn">Next</button>
     </div>
     <div class="full-screen" id="words-container" style="display: none;">
@@ -186,11 +184,11 @@
     const playButton = document.getElementById('play-music-btn');
     const nextButton = document.getElementById('next-btn');
     const startReadingButton = document.getElementById('start-reading-btn');
+    const backButton = document.getElementById('back-btn');
     const welcomeContainer = document.getElementById('welcome-container');
     const playContainer = document.getElementById('play-container');
     const readingContainer = document.getElementById('reading-container');
     const imageContainer = document.querySelector('.image-container');
-    const storyText = document.getElementById('story-text');
     const nextButtonContainer = document.getElementById('next-button-container');
     const wordsContainer = document.getElementById('words-container');
     const backgroundMusic = document.getElementById('background-music');
@@ -218,18 +216,29 @@
     startReadingButton.addEventListener('click', () => {
       readingContainer.style.display = 'none';
       imageContainer.style.display = 'block';
-      storyText.style.display = 'block';
       nextButtonContainer.style.display = 'block';
+      currentIndex = 0; // Reset index to start from the first story segment
       updateStory();
+    });
+
+    backButton.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--; // Mundur satu gambar
+        updateStory();
+      }
     });
 
     function updateStory() {
       const segment = storySegments[currentIndex];
-      storyText.textContent = segment.text;
       document.getElementById('story-image').src = segment.image;
+
+      // Menyembunyikan tombol "Kembali" jika berada di gambar pertama
+      backButton.style.display = currentIndex === 0 ? 'none' : 'inline-block';
 
       if (currentIndex === storySegments.length - 1) {
         nextButtonContainer.style.display = 'block'; // Show next button on last segment
+      } else {
+        nextButtonContainer.style.display = 'block'; // Show next button on other segments
       }
     }
 
@@ -240,7 +249,6 @@
       } else {
         // Menampilkan kata-kata setelah cerita selesai
         imageContainer.style.display = 'none';
-        storyText.style.display = 'none';
         nextButtonContainer.style.display = 'none'; // Hide next button
         wordsContainer.style.display = 'block'; // Show words container
       }
